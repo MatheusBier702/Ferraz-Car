@@ -6,8 +6,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Ferraz Car | Oficina</title>
-    <link rel="stylesheet" href="{% static 'oficina/style.css' %}?v=order-3">
-    <script defer src="{% static 'oficina/app.js' %}?v=order-3"></script>
+    <script>
+    (() => { let saved; try { saved = localStorage.getItem('ferraz-theme'); } catch {} const dark = saved === 'dark' || (saved !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches); document.documentElement.dataset.theme = dark ? 'dark' : 'light'; })();
+    </script>
+    <link rel="stylesheet" href="{% static 'oficina/style.css' %}?v=icons-1">
+    <script defer src="{% static 'oficina/app.js' %}?v=icons-1"></script>
 </head>
 
 <body>
@@ -15,11 +18,11 @@
         <a class="logo" href="/" aria-label="Ferraz Car"><img src="{% static 'oficina/logo-ferraz-car.png' %}"
                 alt="Ferraz Car" width="520" height="145"></a>
         <div class="sidebar-caption">GESTÃO DA OFICINA</div>
-        <nav aria-label="Menu principal"><button class="nav-item active" data-page="dashboard"><span>◫</span> Visão
-                geral</button><button class="nav-item" data-page="services"><span>⌁</span> Serviços
-                <small>04</small></button><button class="nav-item" data-page="vehicles"><span>▱</span>
-                Veículos</button><button class="nav-item" data-page="clients"><span>♙</span> Clientes</button></nav>
-        <div class="sidebar-bottom"><span class="status-dot"></span> Ambiente de demonstração<div class="profile">
+        <nav aria-label="Menu principal"><button class="nav-item active" data-page="dashboard"><span class="nav-icon"><svg class="ui-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span> Visão
+                geral</button><button class="nav-item" data-page="services"><span class="nav-icon"><svg class="ui-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14.5 6.5 17 9l4-4a6 6 0 0 1-7.7 7.7l-7.8 7.8a2.1 2.1 0 0 1-3-3l7.8-7.8A6 6 0 0 1 18 2.5Z"/></svg></span> Serviços
+                <small>00</small></button><button class="nav-item" data-page="vehicles"><span class="nav-icon"><svg class="ui-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m5 10 2-6h10l2 6M5 10h14a2 2 0 0 1 2 2v5H3v-5a2 2 0 0 1 2-2ZM3 17v3h3v-3M18 17v3h3v-3M7 13h1M16 13h1"/></svg></span>
+                Veículos</button><button class="nav-item" data-page="clients"><span class="nav-icon"><svg class="ui-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="7" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg></span> Clientes</button></nav>
+        <div class="sidebar-bottom"><span class="status-dot"></span> Banco local · SQLite<div class="profile">
                 <div class="avatar">FC</div>
                 <div><strong>Ferraz Car</strong><small>Administração</small></div>
             </div>
@@ -29,7 +32,7 @@
         <header>
             <div class="breadcrumb">Oficina <span>/</span> <strong id="breadcrumb">Visão geral</strong></div>
             <div class="header-right"><span class="desktop-label">Cuidando de cada detalhe.</span>
-                <div class="avatar small-avatar">FC</div>
+                <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Ativar modo escuro" aria-pressed="false">☾ <span>Modo escuro</span></button><form action="{% url 'logout' %}" method="post" class="logout-form">{% csrf_token %}<button type="submit" class="theme-toggle">Sair</button></form><div class="avatar small-avatar" title="{{ request.user.username }}">{{ request.user.username|slice:':2'|upper }}</div>
             </div>
         </header>
         <div class="content">
@@ -40,24 +43,23 @@
                     <p id="page-description">Acompanhe os veículos, os clientes e cada serviço em um só lugar.</p>
                 </div><button class="primary" id="new-service"><span>＋</span> Criar serviço</button>
             </section>
-            <div class="demo-banner">Prévia do painel · Os dados abaixo são exemplos. Os cadastros ainda não são salvos
-                no banco.</div>
+            <div class="demo-banner">Clientes, veículos e ordens de serviço salvos no banco local.</div>
             <section class="stats" id="stats">
                 <article class="stat">
-                    <div><span>Serviços em andamento</span><span class="stat-icon">⌁</span></div>
-                    <strong>04</strong><small><i class="dot amber"></i> 2 aguardando aprovação</small>
+                    <div><span>Serviços em andamento</span><span class="stat-icon"><svg class="ui-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14.5 6.5 17 9l4-4a6 6 0 0 1-7.7 7.7l-7.8 7.8a2.1 2.1 0 0 1-3-3l7.8-7.8A6 6 0 0 1 18 2.5Z"/></svg></span></div>
+                    <strong>00</strong><small><i class="dot amber"></i> 0 aguardando aprovação</small>
                 </article>
                 <article class="stat">
-                    <div><span>Concluídos neste mês</span><span class="stat-icon">✓</span></div>
-                    <strong>18</strong><small>Histórico de serviços da oficina</small>
+                    <div><span>Concluídos neste mês</span><span class="stat-icon"><svg class="ui-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg></span></div>
+                    <strong>00</strong><small>Histórico de serviços da oficina</small>
                 </article>
                 <article class="stat">
-                    <div><span>Veículos cadastrados</span><span class="stat-icon">▱</span></div>
-                    <strong>32</strong><small>Cada carro com seu histórico</small>
+                    <div><span>Veículos cadastrados</span><span class="stat-icon"><svg class="ui-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m5 10 2-6h10l2 6M5 10h14a2 2 0 0 1 2 2v5H3v-5a2 2 0 0 1 2-2ZM3 17v3h3v-3M18 17v3h3v-3M7 13h1M16 13h1"/></svg></span></div>
+                    <strong>00</strong><small>Cada carro com seu histórico</small>
                 </article>
                 <article class="stat">
-                    <div><span>Clientes cadastrados</span><span class="stat-icon">♙</span></div>
-                    <strong>26</strong><small>Relacionamentos que duram</small>
+                    <div><span>Clientes cadastrados</span><span class="stat-icon"><svg class="ui-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="7" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg></span></div>
+                    <strong>00</strong><small>Relacionamentos que duram</small>
                 </article>
             </section>
             <section class="workspace-grid">
@@ -66,7 +68,7 @@
                         <div>
                             <h2 id="list-title">Serviços recentes</h2>
                             <p id="list-description">Do primeiro diagnóstico à entrega das chaves.</p>
-                        </div><span class="pill">EXEMPLOS</span>
+                        </div><span class="pill">HISTÓRICO</span>
                     </div>
                     <div class="table-tools"><label class="search"><span>⌕</span><input id="search" type="search"
                                 placeholder="Buscar placa, veículo ou cliente…"
@@ -131,7 +133,7 @@
                     <h2>Criar serviço</h2>
                 </div><button type="button" class="close" data-close aria-label="Fechar">×</button>
             </div>
-            <p class="modal-note">Formulário de demonstração. O salvamento será conectado ao banco na próxima etapa.</p>
+            <p class="modal-note">Informe o cliente e o veículo. A placa identifica veículos já cadastrados.</p>
             <div class="form-grid"><label>Proprietário<input name="owner" required placeholder="Nome completo"
                         maxlength="100"></label><label>Telefone<input name="phone" type="tel"
                         placeholder="(00) 00000-0000"></label><label>Placa<input name="plate" required
@@ -140,7 +142,7 @@
                     relatado / serviço<textarea name="description" required rows="3"
                         placeholder="Descreva o que precisa ser feito…" maxlength="1000"></textarea></label></div>
             <div class="modal-actions"><button type="button" class="secondary" data-close>Cancelar</button><button
-                    class="primary" type="submit">Adicionar à prévia</button></div>
+                    class="primary" type="submit">Salvar serviço</button></div>
         </form>
     </dialog>
     <dialog id="detail-dialog">
@@ -150,7 +152,7 @@
             </div><button class="close" data-close aria-label="Fechar">×</button>
         </div>
         <div id="detail-content"></div>
-        <div class="modal-actions"><button class="secondary" data-close>Fechar</button><button class="primary"
+        <div class="modal-actions"><button class="secondary" data-close>Fechar</button><button class="secondary" id="save-service">Salvar alterações</button><button class="primary"
                 id="print-service">Imprimir ordem</button></div>
     </dialog>
     <section id="print-order" aria-label="Ordem de serviço para impressão">
@@ -160,7 +162,7 @@
 <h2 class="order-section-title">SERVIÇOS E PEÇAS</h2><table class="order-items"><thead><tr><th>Descrição</th><th>Valor</th></tr></thead><tbody id="order-items"></tbody></table>
 <div class="order-total"><span>TOTAL</span><strong id="order-total"></strong></div>
 <div class="order-signatures"><div><span>Assinatura do cliente</span><small id="signature-owner"></small></div><div><span>Assinatura da oficina</span><small>Ferraz Car</small></div></div>
-<p class="order-disclaimer">Ordem de serviço de demonstração · Não é nota fiscal.</p></section>
+<p class="order-disclaimer">Ordem de serviço · Não é nota fiscal.</p></section>
 <div id="toast" role="status" aria-live="polite"></div>
 </body>
 

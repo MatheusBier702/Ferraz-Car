@@ -1,0 +1,113 @@
+body.login-page {
+    min-height: 100dvh;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: radial-gradient(ellipse at top, #eee1c8, transparent 65%), #f7f6f2
+}
+
+.login-card {
+    margin: 0;
+    width: min(420px, 100%);
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 36px;
+    box-shadow: 0 20px 60px #42351c12
+}
+
+.login-logo {
+    background: white;
+    border-radius: 8px;
+    margin-bottom: 28px;
+    padding: 6px
+}
+
+.login-logo img {
+    display: block;
+    width: 100%;
+    height: auto
+}
+
+.login-card h1 {
+    font-size: 25px;
+    letter-spacing: -.6px
+}
+
+.login-card>p {
+    font-size: 13px
+}
+
+.login-form {
+    display: grid;
+    gap: 9px;
+    margin-top: 25px
+}
+
+.login-form label {
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 8px
+}
+
+.login-form input:not([type=hidden]) {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    padding: 12px;
+    background: #faf9f6;
+    color: var(--ink);
+    outline-color: var(--gold)
+}
+
+.login-form .primary {
+    margin-top: 15px;
+    font-size: 13px
+}
+
+.login-error {
+    background: #fff1eb;
+    border: 1px solid #e4b5a5;
+    border-radius: 6px;
+    color: #9b3c25;
+    padding: 12px;
+    font-size: 12px;
+    line-height: 1.6
+}
+
+.login-card .login-footer {
+    margin-top: 25px;
+    font-size: 10px;
+    text-align: center
+}
+
+.logout-form {
+    margin: 0
+}
+
+@media screen {
+    [data-theme=dark] body.login-page {
+        background: radial-gradient(ellipse at top, #3c3223, transparent 65%), #191b1e
+    }
+
+    [data-theme=dark] .login-card {
+        background: #23262a
+    }
+
+    [data-theme=dark] .login-form input:not([type=hidden]) {
+        background: #1c1f23;
+        border-color: #45484e
+    }
+
+    [data-theme=dark] .login-error {
+        background: #402820;
+        color: #ffcab5;
+        border-color: #77503f
+    }
+}
+
+@media(max-width:480px) {
+    .login-card {
+        padding: 25px
+    }
+}
