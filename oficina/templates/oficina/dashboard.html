@@ -1,0 +1,167 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ferraz Car | Oficina</title>
+    <link rel="stylesheet" href="{% static 'oficina/style.css' %}?v=order-3">
+    <script defer src="{% static 'oficina/app.js' %}?v=order-3"></script>
+</head>
+
+<body>
+    <aside class="sidebar">
+        <a class="logo" href="/" aria-label="Ferraz Car"><img src="{% static 'oficina/logo-ferraz-car.png' %}"
+                alt="Ferraz Car" width="520" height="145"></a>
+        <div class="sidebar-caption">GESTÃO DA OFICINA</div>
+        <nav aria-label="Menu principal"><button class="nav-item active" data-page="dashboard"><span>◫</span> Visão
+                geral</button><button class="nav-item" data-page="services"><span>⌁</span> Serviços
+                <small>04</small></button><button class="nav-item" data-page="vehicles"><span>▱</span>
+                Veículos</button><button class="nav-item" data-page="clients"><span>♙</span> Clientes</button></nav>
+        <div class="sidebar-bottom"><span class="status-dot"></span> Ambiente de demonstração<div class="profile">
+                <div class="avatar">FC</div>
+                <div><strong>Ferraz Car</strong><small>Administração</small></div>
+            </div>
+        </div>
+    </aside>
+    <main>
+        <header>
+            <div class="breadcrumb">Oficina <span>/</span> <strong id="breadcrumb">Visão geral</strong></div>
+            <div class="header-right"><span class="desktop-label">Cuidando de cada detalhe.</span>
+                <div class="avatar small-avatar">FC</div>
+            </div>
+        </header>
+        <div class="content">
+            <section class="page-heading">
+                <div>
+                    <div class="eyebrow">SEU DIA NA OFICINA</div>
+                    <h1 id="page-title">Tudo sob controle.</h1>
+                    <p id="page-description">Acompanhe os veículos, os clientes e cada serviço em um só lugar.</p>
+                </div><button class="primary" id="new-service"><span>＋</span> Criar serviço</button>
+            </section>
+            <div class="demo-banner">Prévia do painel · Os dados abaixo são exemplos. Os cadastros ainda não são salvos
+                no banco.</div>
+            <section class="stats" id="stats">
+                <article class="stat">
+                    <div><span>Serviços em andamento</span><span class="stat-icon">⌁</span></div>
+                    <strong>04</strong><small><i class="dot amber"></i> 2 aguardando aprovação</small>
+                </article>
+                <article class="stat">
+                    <div><span>Concluídos neste mês</span><span class="stat-icon">✓</span></div>
+                    <strong>18</strong><small>Histórico de serviços da oficina</small>
+                </article>
+                <article class="stat">
+                    <div><span>Veículos cadastrados</span><span class="stat-icon">▱</span></div>
+                    <strong>32</strong><small>Cada carro com seu histórico</small>
+                </article>
+                <article class="stat">
+                    <div><span>Clientes cadastrados</span><span class="stat-icon">♙</span></div>
+                    <strong>26</strong><small>Relacionamentos que duram</small>
+                </article>
+            </section>
+            <section class="workspace-grid">
+                <div class="panel main-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <h2 id="list-title">Serviços recentes</h2>
+                            <p id="list-description">Do primeiro diagnóstico à entrega das chaves.</p>
+                        </div><span class="pill">EXEMPLOS</span>
+                    </div>
+                    <div class="table-tools"><label class="search"><span>⌕</span><input id="search" type="search"
+                                placeholder="Buscar placa, veículo ou cliente…"
+                                aria-label="Buscar registros"></label><select id="status-filter"
+                            aria-label="Filtrar por situação">
+                            <option value="">Todas as situações</option>
+                            <option>Em andamento</option>
+                            <option>Aguardando aprovação</option>
+                            <option>Concluído</option>
+                        </select></div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead id="table-head"></thead>
+                            <tbody id="table-body"></tbody>
+                        </table>
+                    </div>
+                    <div class="table-footer"><span id="result-count"></span><span>Ferraz Car · atenção em cada
+                            serviço</span></div>
+                </div>
+                <aside class="right-column" id="right-column">
+                    <div class="feature-card"><span class="eyebrow">DA ENTRADA À ENTREGA</span>
+                        <h2>O cuidado fica.<br>O histórico também.</h2>
+                        <p>Encontre o que foi feito em cada veículo e tenha os detalhes sempre à mão.</p>
+                        <div class="road-art" aria-hidden="true"><svg viewBox="0 0 300 120">
+                                <path d="M0 105H300" stroke="currentColor" stroke-dasharray="12 12" />
+                                <path
+                                    d="M60 78V57L83 48L104 22H191L219 48L239 57V78H220M91 78H204M105 28L89 49H208L188 28Z"
+                                    fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" />
+                                <circle cx="79" cy="78" r="14" fill="none" stroke="currentColor" stroke-width="3" />
+                                <circle cx="218" cy="78" r="14" fill="none" stroke="currentColor" stroke-width="3" />
+                            </svg></div>
+                    </div>
+                    <div class="panel workflow">
+                        <h2>Um serviço, passo a passo</h2>
+                        <ol>
+                            <li><b>01</b>
+                                <div><strong>Identifique o veículo</strong>
+                                    <p>Carro e proprietário vinculados.</p>
+                                </div>
+                            </li>
+                            <li><b>02</b>
+                                <div><strong>Registre o trabalho</strong>
+                                    <p>Serviços, peças e observações.</p>
+                                </div>
+                            </li>
+                            <li><b>03</b>
+                                <div><strong>Finalize e consulte</strong>
+                                    <p>Tudo organizado no histórico.</p>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+                </aside>
+            </section>
+            <footer>FERRAZ CAR <span>Organização para a oficina. Confiança para o cliente.</span></footer>
+        </div>
+    </main>
+    <dialog id="service-dialog">
+        <form id="service-form">
+            <div class="modal-header">
+                <div><span class="eyebrow">ORDEM DE SERVIÇO</span>
+                    <h2>Criar serviço</h2>
+                </div><button type="button" class="close" data-close aria-label="Fechar">×</button>
+            </div>
+            <p class="modal-note">Formulário de demonstração. O salvamento será conectado ao banco na próxima etapa.</p>
+            <div class="form-grid"><label>Proprietário<input name="owner" required placeholder="Nome completo"
+                        maxlength="100"></label><label>Telefone<input name="phone" type="tel"
+                        placeholder="(00) 00000-0000"></label><label>Placa<input name="plate" required
+                        placeholder="ABC1D23" maxlength="8"></label><label>Marca<input name="brand" list="brand-suggestions" required placeholder="Ex.: Chevrolet" maxlength="100"></label><datalist id="brand-suggestions"></datalist><label>Modelo<input name="model" list="model-suggestions" required placeholder="Ex.: Onix" maxlength="100"></label><datalist id="model-suggestions"></datalist><label>Ano<input name="year"
+                        type="number" min="1900" max="2100" placeholder="2020"></label><label class="full">Problema
+                    relatado / serviço<textarea name="description" required rows="3"
+                        placeholder="Descreva o que precisa ser feito…" maxlength="1000"></textarea></label></div>
+            <div class="modal-actions"><button type="button" class="secondary" data-close>Cancelar</button><button
+                    class="primary" type="submit">Adicionar à prévia</button></div>
+        </form>
+    </dialog>
+    <dialog id="detail-dialog">
+        <div class="modal-header">
+            <div><span class="eyebrow">HISTÓRICO DO ATENDIMENTO</span>
+                <h2>Detalhes do serviço</h2>
+            </div><button class="close" data-close aria-label="Fechar">×</button>
+        </div>
+        <div id="detail-content"></div>
+        <div class="modal-actions"><button class="secondary" data-close>Fechar</button><button class="primary"
+                id="print-service">Imprimir ordem</button></div>
+    </dialog>
+    <section id="print-order" aria-label="Ordem de serviço para impressão">
+<img class="order-logo" src="{% static 'oficina/logo-ferraz-car.png' %}" alt="Ferraz Car" width="520" height="145">
+<div class="order-divider"></div><h1>ORDEM DE SERVIÇO</h1><p class="order-subtitle">Ferraz Car</p><div id="order-meta"></div>
+<h2 class="order-section-title">DADOS DO VEÍCULO</h2><div id="order-vehicle" class="order-vehicle"></div>
+<h2 class="order-section-title">SERVIÇOS E PEÇAS</h2><table class="order-items"><thead><tr><th>Descrição</th><th>Valor</th></tr></thead><tbody id="order-items"></tbody></table>
+<div class="order-total"><span>TOTAL</span><strong id="order-total"></strong></div>
+<div class="order-signatures"><div><span>Assinatura do cliente</span><small id="signature-owner"></small></div><div><span>Assinatura da oficina</span><small>Ferraz Car</small></div></div>
+<p class="order-disclaimer">Ordem de serviço de demonstração · Não é nota fiscal.</p></section>
+<div id="toast" role="status" aria-live="polite"></div>
+</body>
+
+</html>
