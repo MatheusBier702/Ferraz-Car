@@ -23,10 +23,14 @@ O banco está em `db.sqlite3`. Faça cópias desse arquivo com o servidor parado
 .\.venv\Scripts\python.exe manage.py test oficina
 ```
 
+## Novos atendimentos
+
+Em Criar serviço, selecione um cliente existente (nome, telefone e código identificam o cadastro) e um dos seus veículos. A placa também preenche automaticamente o veículo e seu proprietário atual. Escolha cadastrar novo para preencher os dados de um novo cliente ou veículo. Um cliente pode ter vários veículos e cada atendimento cria uma ordem independente. Para trocar o proprietário de um carro já cadastrado, use Editar em Veículos.
+
 ## Edição dos cadastros
 
 Nas listas Clientes e Veículos, use Editar para atualizar os dados atuais. Veículos permitem alterar placa, marca, modelo, ano e proprietário. Placas duplicadas são rejeitadas. As ordens anteriores preservam os dados originais do atendimento; os cadastros atuais são mostrados separadamente do histórico.
 
 ## Próximas etapas
 
-Rotina de backup e seleção de cadastros existentes ao criar atendimentos. O painel e a API exigem login; sair encerra a sessão por POST com proteção CSRF. A conta inicial Ferraz foi cadastrada no banco local. Antes de disponibilizar na internet, configurar a implantação de produção. SQLite também funciona em servidores com disco persistente; PostgreSQL é uma opção para crescimento.
+Rotina de backup. O painel e a API exigem login; sair encerra a sessão por POST com proteção CSRF. A conta inicial Ferraz foi cadastrada no banco local. Antes de disponibilizar na internet, configurar a implantação de produção. SQLite também funciona em servidores com disco persistente; PostgreSQL é uma opção para crescimento.

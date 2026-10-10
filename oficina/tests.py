@@ -1,4 +1,6 @@
 import json
+import re
+from pathlib import Path
 from django.test import TestCase, Client
 from django.contrib.auth import get_user_model
 from .models import Cliente, Veiculo, OrdemServico, ItemServico
@@ -58,6 +60,18 @@ class ServiceTests(TestCase):
             self.assertEqual(self.create(**data).status_code, 400)
         self.assertEqual(Cliente.objects.count(), 0)
         self.assertEqual(Veiculo.objects.count(), 0)
+
+    def test_frontend_initialization_targets_exist(self):
+        # Um elemento ausente interrompia a inicialização antes de preparar Criar serviço.
+        response = self.client.get('/')
+        html = response.content.decode()
+        script = (Path(__file__).parent / 'static/oficina/app.js').read_text(encoding='utf-8')
+        target_ids = set(re.findall(r"\$\(['\"]([^'\"]+)['\"]\)", script))
+        for target_id in target_ids:
+            with self.subTest(target=target_id):
+                self.assertIn(f'id="{target_id}"', html)
+        for field in ['owner', 'phone', 'plate', 'brand', 'model', 'year', 'description', 'clientId', 'vehicleId']:
+            self.assertIn(f'name="{field}"', html)
 
     def test_csrf_and_frontend_hooks(self):
         client = Client(enforce_csrf_checks=True)
@@ -163,3 +177,55 @@ class RegistryTests(TestCase):
         token = client.cookies['csrftoken'].value
         self.assertEqual(client.patch(f'/api/clients/{self.owner.pk}/', data=json.dumps(dict(name='Ana Nova', phone='444')), content_type='application/json', HTTP_X_CSRFTOKEN=token).status_code, 200)
         self.assertEqual(self.patch('/api/clients/999999/', dict(name='Pessoa', phone='')).status_code, 404)
+
+class ReuseTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(username='reuse-user', password='test-password-123')
+        self.client.force_login(self.user)
+        self.owner = Cliente.objects.create(nome='Ana')
+        self.vehicle = Veiculo.objects.create(proprietario=self.owner, placa='ABC1D23', marca='Honda', modelo='Fit', ano=2004)
+
+    def create(self, **changes):
+        data = dict(clientId=self.owner.pk, vehicleId=self.vehicle.pk, description='Novo atendimento')
+        data.update(changes)
+        return self.client.post('/api/services/', data=json.dumps(data), content_type='application/json')
+
+    def test_many_services_use_same_registration(self):
+        for _ in range(3):
+            response = self.create(owner='Nome ignorado', brand='Marca ignorada')
+            self.assertEqual(response.status_code, 201)
+            self.assertEqual(response.json()['record']['owner'], 'Ana')
+            self.assertEqual(response.json()['record']['brand'], 'Honda')
+        self.assertEqual(Cliente.objects.count(), 1)
+        self.assertEqual(Veiculo.objects.count(), 1)
+        self.assertEqual(self.owner.ordens.count(), 3)
+        self.assertEqual(self.vehicle.ordens.count(), 3)
+
+    def test_same_client_can_have_another_vehicle_without_phone(self):
+        self.assertEqual(self.create().status_code, 201)
+        response = self.create(vehicleId=None, plate='XYZ1234', brand='Fiat', model='Uno', year='2010')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(Cliente.objects.count(), 1)
+        self.assertEqual(self.owner.veiculos.count(), 2)
+        self.assertEqual(self.owner.ordens.count(), 2)
+
+    def test_same_names_use_selected_id(self):
+        other = Cliente.objects.create(nome='Ana')
+        response = self.create(clientId=other.pk, vehicleId=None, plate='XYZ1234', brand='Fiat', model='Uno')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.json()['record']['clientId'], other.pk)
+        self.assertEqual(Cliente.objects.count(), 2)
+
+    def test_invalid_selection_creates_nothing(self):
+        other = Cliente.objects.create(nome='Carlos')
+        for changes in [dict(clientId=99999), dict(vehicleId=99999), dict(clientId='1'), dict(clientId=other.pk), dict(clientId=other.pk, vehicleId=None, plate='ABC1D23', brand='Honda', model='Fit')]:
+            self.assertEqual(self.create(**changes).status_code, 400)
+        self.assertEqual(OrdemServico.objects.count(), 0)
+        self.vehicle.refresh_from_db()
+        self.assertEqual(self.vehicle.proprietario_id, self.owner.pk)
+
+    def test_selected_vehicle_uses_current_data(self):
+        self.vehicle.modelo = 'Fit atualizado'; self.vehicle.save()
+        response = self.create(model='Fit antigo')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.json()['record']['model'], 'Fit atualizado')

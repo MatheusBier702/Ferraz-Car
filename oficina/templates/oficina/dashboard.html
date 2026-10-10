@@ -9,8 +9,8 @@
     <script>
     (() => { let saved; try { saved = localStorage.getItem('ferraz-theme'); } catch {} const dark = saved === 'dark' || (saved !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches); document.documentElement.dataset.theme = dark ? 'dark' : 'light'; })();
     </script>
-    <link rel="stylesheet" href="{% static 'oficina/style.css' %}?v=icons-1">
-    <script defer src="{% static 'oficina/app.js' %}?v=icons-1"></script>
+    <link rel="stylesheet" href="{% static 'oficina/style.css' %}?v=fix-service-1">
+    <script defer src="{% static 'oficina/app.js' %}?v=fix-service-1"></script>
 </head>
 
 <body>
@@ -133,8 +133,8 @@
                     <h2>Criar serviço</h2>
                 </div><button type="button" class="close" data-close aria-label="Fechar">×</button>
             </div>
-            <p class="modal-note">Informe o cliente e o veículo. A placa identifica veículos já cadastrados.</p>
-            <div class="form-grid"><label>Proprietário<input name="owner" required placeholder="Nome completo"
+            <p class="modal-note">Selecione um cliente e veículo existentes, ou preencha os dados de um novo cadastro. Digitar uma placa cadastrada preenche os dados automaticamente.</p>
+            <div class="form-grid"><label class="full">Cliente<select name="clientId" id="service-client"><option value="">Cadastrar novo cliente</option></select></label><label class="full">Veículo<select name="vehicleId" id="service-vehicle"><option value="">Cadastrar veículo / buscar pela placa</option></select></label><label>Proprietário<input name="owner" required placeholder="Nome completo"
                         maxlength="100"></label><label>Telefone<input name="phone" type="tel"
                         placeholder="(00) 00000-0000"></label><label>Placa<input name="plate" required
                         placeholder="ABC1D23" maxlength="8"></label><label>Marca<input name="brand" list="brand-suggestions" required placeholder="Ex.: Chevrolet" maxlength="100"></label><datalist id="brand-suggestions"></datalist><label>Modelo<input name="model" list="model-suggestions" required placeholder="Ex.: Onix" maxlength="100"></label><datalist id="model-suggestions"></datalist><label>Ano<input name="year"
@@ -163,6 +163,7 @@
 <div class="order-total"><span>TOTAL</span><strong id="order-total"></strong></div>
 <div class="order-signatures"><div><span>Assinatura do cliente</span><small id="signature-owner"></small></div><div><span>Assinatura da oficina</span><small>Ferraz Car</small></div></div>
 <p class="order-disclaimer">Ordem de serviço · Não é nota fiscal.</p></section>
+<dialog id="edit-dialog"><form id="edit-form"><div class="modal-header"><div><span class="eyebrow">CADASTRO</span><h2 id="edit-title">Editar cadastro</h2></div><button type="button" class="close" data-close aria-label="Fechar">×</button></div><p class="modal-note">As alterações atualizam o cadastro. Os dados das ordens anteriores são preservados.</p><div id="edit-fields" class="form-grid"></div><div id="edit-error" role="alert" class="edit-error" hidden></div><div class="modal-actions"><button type="button" class="secondary" data-close>Cancelar</button><button type="submit" class="primary">Salvar cadastro</button></div></form></dialog>
 <div id="toast" role="status" aria-live="polite"></div>
 </body>
 

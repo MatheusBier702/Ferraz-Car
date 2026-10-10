@@ -1317,3 +1317,5 @@ button:disabled {
 .edit-error{margin-top:18px;padding:12px;border:1px solid var(--gold);border-radius:6px;color:var(--gold);font-size:12px}td .row-action+ .row-action{margin-left:6px}
 
 .ui-icon{display:block;width:22px;height:22px;flex-shrink:0}.nav-icon,.stat-icon{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}.nav-item>.nav-icon{width:23px}.stat-icon .ui-icon{width:21px;height:21px}@media(max-width:600px){.nav-icon .ui-icon{width:18px;height:18px}.nav-item>.nav-icon{width:18px}}
+
+.form-grid input[readonly]{opacity:.8;cursor:default;background:#f2eee5}.form-grid select{width:100%;padding:11px;font-size:12px}@media screen{[data-theme="dark"] .form-grid input[readonly]{background:#30302b}}

@@ -57,7 +57,25 @@ def services(request):
             'vehicles': Veiculo.objects.count(), 'clients': Cliente.objects.count()}})
     try:
         data = payload(request)
-        owner = text(data, 'owner', 100); phone = text(data, 'phone', 30, False)
+        selected_client = None
+        selected_vehicle = None
+        if data.get('clientId') not in ('', None):
+            if type(data['clientId']) is not int: raise ValueError('Cliente inválido.')
+            selected_client = Cliente.objects.filter(pk=data['clientId']).first()
+            if selected_client is None: raise ValueError('Cliente não encontrado.')
+        if data.get('vehicleId') not in ('', None):
+            if type(data['vehicleId']) is not int: raise ValueError('Veículo inválido.')
+            selected_vehicle = Veiculo.objects.select_related('proprietario').filter(pk=data['vehicleId']).first()
+            if selected_vehicle is None: raise ValueError('Veículo não encontrado.')
+            if selected_client and selected_vehicle.proprietario_id != selected_client.pk:
+                raise ValueError('O veículo não pertence ao cliente selecionado. Confira o cadastro.')
+            selected_client = selected_vehicle.proprietario
+            data = {**data, 'plate': selected_vehicle.placa, 'brand': selected_vehicle.marca,
+                'model': selected_vehicle.modelo, 'year': selected_vehicle.ano}
+        if selected_client:
+            owner = selected_client.nome; phone = selected_client.telefone
+        else:
+            owner = text(data, 'owner', 100); phone = text(data, 'phone', 30, False)
         brand = text(data, 'brand', 100); model = text(data, 'model', 100)
         description = text(data, 'description', 1000)
         plate = re.sub(r'[\s-]', '', text(data, 'plate', 12)).upper()
@@ -70,8 +88,12 @@ def services(request):
             year = int(raw_year)
             if not 1900 <= year <= 2100: raise ValueError('Ano inválido.')
         with transaction.atomic():
-            vehicle = Veiculo.objects.select_related('proprietario').filter(placa=plate).first()
-            if vehicle and vehicle.proprietario.nome.casefold() == owner.casefold() and (not phone or vehicle.proprietario.telefone == phone):
+            vehicle = selected_vehicle or Veiculo.objects.select_related('proprietario').filter(placa=plate).first()
+            if selected_client and vehicle and vehicle.proprietario_id != selected_client.pk:
+                raise ValueError('Essa placa pertence a outro cliente. Atualize o proprietário em Veículos antes de criar o serviço.')
+            if selected_client:
+                client = selected_client
+            elif vehicle and vehicle.proprietario.nome.casefold() == owner.casefold() and (not phone or vehicle.proprietario.telefone == phone):
                 client = vehicle.proprietario
             else:
                 # Não associa pessoas distintas apenas pelo nome quando não há telefone.
@@ -83,6 +105,7 @@ def services(request):
                 telefone_cliente=phone, marca=brand, modelo=model, placa=plate, ano=year, descricao=description)
             ItemServico.objects.create(ordem=order, descricao=description, valor_centavos=None)
         return JsonResponse({'record': serialize(order)}, status=201)
+    except IntegrityError: return JsonResponse({'error': 'Essa placa já foi cadastrada. Reabra o formulário e selecione o veículo.'}, status=400)
     except ValueError as error: return JsonResponse({'error': str(error)}, status=400)
 
 @api_login_required
